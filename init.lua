@@ -1,17 +1,5 @@
--- ---- Bit Manipulation ----
--- This section is going to be slow, and the rationale questionable.
--- Lua 5.1 does not support bitwise operations.
--- Lua 5.2 does, but it is in the form of the bit32 module.
--- Lua 5.3/5.4 has native bitwise operations, but these break backwards compatibility with 5.1/5.2 and LuaJIT.
--- LuaJIT has bit.*, but it is not available in all environments.
--- LuaRocks environments have a bit32 module, but it is not pure Lua, and LuaRocks on Windows is questionable at best.
---
--- The only solution is to implement them ourselves in pure Lua. If this implementation is too slow, recommend:
--- Implementing it for your environment.
--- Complaining to PUC RIO, lol.
--- --------------------------
-
-local bitManip = {} -- Internal Use Bit Module
+local Public = {}  -- Public Module Table
+local private = {} -- Private Module Table
 
 ---**numberToBytes**
 ---
@@ -31,7 +19,7 @@ local bitManip = {} -- Internal Use Bit Module
 --- -- 	{ 0, 0, 0, 0, 0, 0, 0, 1 },
 --- -- }
 --- ```
-function bitManip.numberToBytes(number)
+function Public.numberToBytes(number)
 	local bits = {}
 
 	while number > 0 do
@@ -63,7 +51,7 @@ end
 --- ```
 --- @param byte table	# The byte to convert to a number.
 --- @return number number	# The number represented by the byte.
-function bitManip.byteToNumber(byte)
+function Public.byteToNumber(byte)
 	local number = 0
 	for index, bit in ipairs(byte) do
 		number = number + bit * 2 ^ (index - 1)
@@ -71,7 +59,7 @@ function bitManip.byteToNumber(byte)
 	return number
 end
 
-function bitManip.band(lhs, rhs)
+function Public.band(lhs, rhs)
 	local output = {}
 	for i = 1, 8 do
 		output[i] = (lhs[i] == rhs[i]) and 1 or 0
@@ -79,7 +67,7 @@ function bitManip.band(lhs, rhs)
 	return output
 end
 
-function bitManip.bor(lhs, rhs)
+function Public.bor(lhs, rhs)
 	local output = {}
 	for i = 1, 8 do
 		output[i] = (lhs[i] == 1 or rhs[i] == 1) and 1 or 0
@@ -87,7 +75,7 @@ function bitManip.bor(lhs, rhs)
 	return output
 end
 
-function bitManip.mostSignificantBits(byte, count)
+function Public.mostSignificantBits(byte, count)
 	local output = {}
 
 	for i = 1, 8 - count do
@@ -101,7 +89,7 @@ function bitManip.mostSignificantBits(byte, count)
 	return output
 end
 
-function bitManip.leastSignificantBits(byte, count)
+function Public.leastSignificantBits(byte, count)
 	local output = {}
 
 	for i = 1, count do
@@ -115,7 +103,7 @@ function bitManip.leastSignificantBits(byte, count)
 	return output
 end
 
-function bitManip.bitShiftRight(byte, count)
+function Public.bitShiftRight(byte, count)
 	local output = {}
 
 	for i = 1, 8 do
@@ -125,7 +113,7 @@ function bitManip.bitShiftRight(byte, count)
 	return output
 end
 
-function bitManip.bitShiftLeft(byte, count)
+function Public.bitShiftLeft(byte, count)
 	local output = {}
 
 	for i = 1, 8 - count do
@@ -137,4 +125,4 @@ function bitManip.bitShiftLeft(byte, count)
 	return output
 end
 
--- ---- End Section ----
+return Public
