@@ -41,7 +41,7 @@ jobs:
             run: |
                 cp readme.md readme.md.tmp
                 cat summary.md > readme.md
-                echo "" >> readme.md
+                printf "\n" >> readme.md
                 cat readme.md.tmp >> readme.md
             if: always()
 
