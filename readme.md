@@ -18,6 +18,10 @@ It can be useful to think about binary data without having to worry about the un
 
 # Data Representation
 
-Bitazard encodes binary data in the form of 8-bit bytes as lists. The lists contain 8 boolean values from positions 1 through 8, with position 1 being the most significant bit, and position 8 being the least significant bit. A 0 in the list represents 0. A 1 in the list represents 1. Any other value in a list will result in an error being returned. Any other length of a list will result in an error being returned.
+Bitazard encodes binary data in the form of 8-bit bytes as lists. The lists contain 8 boolean values from positions 1 through 8, with position 1 being the most significant bit, and position 8 being the least significant bit. A 0 in the list represents 0. A 1 in the list represents 1. Any other value in a list will result in undefined behaviour. Any other length of a list will result in undefined behaviour.
 
-This makes it very easy to hand-write bytes when you need to: `{0, 1, 1, 1,  1, 1, 1, 1}`
+Bitazard expects the programmer to call its API with valid data, and provides API helpers to create data that is valid. If the data is being sourced from somewhere outside the programmer's control, there are validations that will verify whether or not the data conforms to Bitazard's expected inputs.
+
+This makes it very easy to hand-write bytes when you need to: `{0, 1, 1, 1,  1, 1, 1, 1} --127`
+
+# Usage
