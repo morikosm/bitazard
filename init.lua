@@ -1,6 +1,12 @@
 local Public = {}  -- Public Module Table
 local private = {} -- Private Module Table
 
+--- @alias bitazard.bit number<0|1>
+--- @alias bitazard.byte [bitazard.bit, bitazard.bit, bitazard.bit, bitazard.bit, bitazard.bit, bitazard.bit, bitazard.bit, bitazard.bit]
+--- @alias bitazard.byteArray bitazard.byte[]
+
+---MARK: Validity
+
 ---**IsValidByte**
 ---
 --- Validates if a table conforms to the byte format used by Bitazard.
@@ -12,16 +18,16 @@ local private = {} -- Private Module Table
 ---
 --- **Example:**
 --- ```lua
---- bit.IsValidByte({ 0, 0, 0, 0, 0, 0, 0, 1 })
+--- bitz.IsValidByte({ 0, 0, 0, 0, 0, 0, 0, 1 })
 --- -- Output:
 --- -- true
 ---
---- bit.IsValidByte({ 0, 0, 0, 0, 0, 0, 0, 1, 0 })
+--- bitz.IsValidByte({ 0, 0, 0, 0, 0, 0, 0, 1, 0 })
 --- -- Output:
 --- -- false
 --- ```
---- @param byte table	# The byte to validate.
---- @return boolean boolean	# Whether the byte is valid.
+--- @param byte bitazard.byte	# The byte to validate.
+--- @return boolean isValid	# Whether the byte is valid.
 function Public.IsValidByte(byte)
 	-- A byte is a table...
 	if type(byte) ~= "table" then
@@ -43,6 +49,8 @@ function Public.IsValidByte(byte)
 	return true
 end
 
+---MARK: Conversion
+
 ---**PositiveIntegerToBytes**
 ---
 --- Converts a positive number to a list of bytes, with each byte represented as a list of bits.
@@ -59,8 +67,8 @@ end
 --- -- 		{ 0, 0, 0, 1, 0, 0, 0, 1 },
 --- -- }
 --- ```
---- @param number number	# The positive number to convert to bytes.
---- @return table bytes	# The bytes represented by the number.
+--- @param number integer	# The positive number to convert to bytes.
+--- @return bitazard.byteArray bytes	# The bytes represented by the number.
 function Public.PositiveIntegerToBytes(number)
 	-- Floor the number
 	number = math.floor(number)
@@ -107,8 +115,8 @@ end
 --- -- Output:
 --- -- 34833
 --- ```
---- @param bytes table	# The bytes to convert to a positive integer.
---- @return number|nil number	# The positive integer represented by the bytes.
+--- @param bytes bitazard.byteArray	# The bytes to convert to a positive integer.
+--- @return integer|nil number	# The positive integer represented by the bytes.
 function Public.BytesToPositiveInteger(bytes)
 	-- If a single byte is passed, wrap it in a table
 	if #bytes == 8 then
@@ -135,6 +143,8 @@ function Public.BytesToPositiveInteger(bytes)
 	return number
 end
 
+---MARK: Bitwise Operations
+
 ---**band**
 ---
 --- Bitwise AND
@@ -150,9 +160,9 @@ end
 --- -- Output:
 --- -- { 0, 0, 0, 0, 1, 0, 0, 0 }
 --- ```
---- @param lhs table	# The left byte. Order does not matter.
---- @param rhs table	# The right byte. Order does not matter.
---- @return table output	# The result of the bitwise AND operation.
+--- @param lhs bitazard.byte	# The left byte. Order does not matter.
+--- @param rhs bitazard.byte	# The right byte. Order does not matter.
+--- @return bitazard.byte output	# The result of the bitwise AND operation.
 function Public.band(lhs, rhs)
 	local output = {}
 	for i = 1, 8 do
@@ -176,9 +186,9 @@ end
 --- -- Output:
 --- -- { 1, 0, 0, 1, 1, 0, 0, 1 }
 --- ```
---- @param lhs table	# The left byte. Order does not matter.
---- @param rhs table	# The right byte. Order does not matter.
---- @return table output	# The result of the bitwise OR operation.
+--- @param lhs bitazard.byte	# The left byte. Order does not matter.
+--- @param rhs bitazard.byte	# The right byte. Order does not matter.
+--- @return bitazard.byte output	# The result of the bitwise OR operation.
 function Public.bor(lhs, rhs)
 	local output = {}
 	for i = 1, 8 do
@@ -202,9 +212,9 @@ end
 --- -- Output:
 --- -- { 1, 0, 0, 1, 0, 0, 0, 1 }
 --- ```
---- @param lhs table	# The left byte. Order does not matter.
---- @param rhs table	# The right byte. Order does not matter.
---- @return table output	# The result of the bitwise XOR operation.
+--- @param lhs bitazard.byte	# The left byte. Order does not matter.
+--- @param rhs bitazard.byte	# The right byte. Order does not matter.
+--- @return bitazard.byte output	# The result of the bitwise XOR operation.
 function Public.bxor(lhs, rhs)
 	local output = {}
 	for i = 1, 8 do
@@ -225,8 +235,8 @@ end
 --- -- Output:
 --- -- { 0, 1, 1, 1, 0, 1, 1, 1 }
 --- ```
---- @param byte table	# The byte to perform the bitwise NOT operation on.
---- @return table output	# The result of the bitwise NOT operation.
+--- @param byte bitazard.byte	# The byte to perform the bitwise NOT operation on.
+--- @return bitazard.byte output	# The result of the bitwise NOT operation.
 function Public.bnot(byte)
 	local output = {}
 	for i = 1, 8 do
@@ -235,14 +245,80 @@ function Public.bnot(byte)
 	return output
 end
 
+---**MostSignificantBits**
+---
+--- Creates a new byte with the most significant (leftmost) bits of the input byte.
+---
+--- **Example:**
+--- ```lua
+--- bitz.MostSignificantBits({ 1, 0, 0, 1, 1, 0, 0, 0 }, 4)
+--- -- Output:
+--- -- { 1, 0, 0, 1, 0, 0, 0, 0 }
+--- ```
+---@param byte bitazard.byte # The byte to extract the most significant bits from.
+---@param count integer # The number of bits to extract.
+---@return bitazard.byte output # The byte with the most significant bits.
+function Public.MostSignificantBits(byte, count)
+	local output = {}
+
+	for i = 1, count do
+		output[i] = byte[i]
+	end
+
+	for i = count + 1, 8 do
+		output[i] = 0
+	end
+
+	return output
+end
+
+-- Alias for MostSignificantBits
+Public.msb = Public.MostSignificantBits
+
+---**LeastSignificantBits**
+---
+--- Creates a new byte with the least significant (rightmost) bits of the input byte.
+--- ```lua
+--- bitz.LeastSignificantBits({ 1, 0, 0, 1, 1, 0, 0, 0 }, 4)
+--- -- Output:
+--- -- { 0, 0, 0, 0, 1, 0, 0, 0}
+--- ```
+--- @param byte bitazard.byte	# The byte to extract the least significant bits from.
+--- @param count integer	# The number of bits to extract.
+--- @return bitazard.byte output	# The byte with the least significant bits.
+function Public.LeastSignificantBits(byte, count)
+	local output = {}
+
+	for i = 8, 8 - count + 1, -1 do
+		output[i] = byte[i]
+	end
+
+	for i = 8 - count, 1, -1 do
+		output[i] = 0
+	end
+
+	return output
+end
+
+-- Alias for LeastSignificantBits
+Public.lsb = Public.leastSignificantBits
+
+---MARK: Shifts
+
 ---**BitShiftRight**
 ---
 --- Bitwise Shift Right
 ---
 --- Shifts the bits of a byte to the right by a specified number of places. Fills the leftmost bits with 0.
---- @param byte table	# The byte to shift.
---- @param count number	# The number of places to shift the bits.
---- @return table output	# The byte after the bits have been shifted.
+--- **Example:**
+--- ```lua
+--- bitz.BitShiftRight({ 1, 0, 0, 0, 1, 0, 0, 0 }, 2)
+--- -- Output:
+--- -- { 0, 0, 1, 0, 0, 0, 1, 0 }
+--- ```
+--- @param byte bitazard.byte	# The byte to shift.
+--- @param count integer	# The number of places to shift the bits.
+--- @return bitazard.byte output	# The byte after the bits have been shifted.
 function Public.BitShiftRight(byte, count)
 	local output = {}
 
@@ -269,9 +345,16 @@ Public.bsr = Public.BitShiftRight
 --- Bitwise Shift Left
 ---
 --- Shifts the bits of a byte to the left by a specified number of places. Fills the rightmost bits with 0.
---- @param byte table	# The byte to shift.
---- @param count number	# The number of places to shift the bits.
---- @return table output	# The byte after the bits have been shifted.
+---
+--- **Example:**
+--- ```lua
+--- bitz.BitShiftLeft({ 0, 0, 1, 0, 0, 0, 1, 0 }, 2)
+--- -- Output:
+--- -- { 1, 0, 0, 0, 1, 0, 0, 0 }
+--- ```
+--- @param byte bitazard.byte	# The byte to shift.
+--- @param count integer	# The number of places to shift the bits.
+--- @return bitazard.byte output	# The byte after the bits have been shifted.
 function Public.BitShiftLeft(byte, count)
 	local output = {}
 
@@ -286,63 +369,91 @@ end
 -- Alias for BitShiftLeft
 Public.bsl = Public.BitShiftLeft
 
----**MostSignificantBits**
+---**BitRotateLeft**
 ---
---- Creates a new byte with the most significant (leftmost) bits of the input byte.
+--- Rotates the bits of a byte to the left by a specified number of places.
+--- The bits that are shifted out of the byte are rotated back to the right.
 ---
 --- **Example:**
 --- ```lua
---- bitz.MostSignificantBits({ 1, 0, 0, 1, 1, 0, 0, 0 }, 4)
+--- bitz.BitRotateLeft({ 1, 0, 0, 0, 1, 0, 0, 0 }, 2)
 --- -- Output:
---- -- { 1, 0, 0, 1, 0, 0, 0, 0 }
+--- -- { 0, 0, 1, 0, 0, 0, 1, 0 }
 --- ```
----@param byte table # The byte to extract the most significant bits from.
----@param count number # The number of bits to extract.
----@return table output # The byte with the most significant bits.
-function Public.MostSignificantBits(byte, count)
+--- @param byte bitazard.byte	# The byte to rotate.
+--- @param count integer	# The number of places to rotate the bits.
+--- @return bitazard.byte output	# The byte after the bits have been rotated.
+function Public.BitRotateLeft(byte, count)
 	local output = {}
 
-	for i = 1, count do
-		output[i] = byte[i]
-	end
-
-	for i = count + 1, 8 do
-		output[i] = 0
+	-- ∀ i | 1 <= i <= 8 : output[i] = byte[(i+count-1) % 8 + 1]
+	for i = 1, 8 do
+		output[i] = byte[(i + count - 1) % 8 + 1]
 	end
 
 	return output
 end
 
--- Alias for MostSignificantBits
-Public.msb = Public.MostSignificantBits
+Public.brl = Public.BitRotateLeft
 
----**LeastSignificantBits**
+---**BitRotateRight**
 ---
---- Creates a new byte with the least significant (rightmost) bits of the input byte.
+--- Rotates the bits of a byte to the right by a specified number of places.
+--- The bits that are shifted out of the byte are rotated back to the left.
+--- **Example:**
 --- ```lua
---- bitz.LeastSignificantBits({ 1, 0, 0, 1, 1, 0, 0, 0 }, 4)
+--- bitz.BitRotateRight({ 1, 0, 0, 0, 1, 0, 0, 1 }, 2)
 --- -- Output:
---- -- { 0, 0, 0, 0, 1, 0, 0, 0}
+--- -- { 0, 1, 1, 0, 0, 0, 1, 0}
 --- ```
---- @param byte table	# The byte to extract the least significant bits from.
---- @param count number	# The number of bits to extract.
---- @return table output	# The byte with the least significant bits.
-function Public.LeastSignificantBits(byte, count)
+--- @param byte bitazard.byte	# The byte to rotate.
+--- @param count integer	# The number of places to rotate the bits.
+--- @return bitazard.byte output	# The byte after the bits have been rotated.
+function Public.BitRotateRight(byte, count)
 	local output = {}
 
-	for i = 8, 8 - count + 1, -1 do
-		output[i] = byte[i]
-	end
-
-	for i = 8 - count, 1, -1 do
-		output[i] = 0
+	-- ∀ i | 1 <= i <= 8 : output[i] = byte[(i-count-1) % 8 + 1]
+	for i = 1, 8 do
+		output[i] = byte[(i - count - 1) % 8 + 1]
 	end
 
 	return output
 end
 
--- Alias for LeastSignificantBits
-Public.lsb = Public.leastSignificantBits
+Public.brr = Public.BitRotateRight
 
+---**ArithmeticShiftRight**
+---
+--- Arithmetic Shift Right
+---
+--- Shifts the bits of a byte to the right by a specified number of places.
+--- Fills the leftmost bits with the value of the sign (first) bit.
+---
+--- **Example:**
+--- ```lua
+--- bitz.ArithmeticShiftRight({ 1, 0, 0, 0, 1, 0, 0, 0 }, 2)
+--- -- Output:
+--- -- { 1, 1, 1, 0, 0, 0, 1, 0 }
+--- ```
+--- @param byte bitazard.byte	# The byte to shift.
+--- @param count integer	# The number of places to shift the bits.
+--- @return bitazard.byte output	# The byte after the bits have been shifted.
+function Public.ArithmeticShiftRight(byte, count)
+	local output = {}
+
+	-- ∀ i | 1 <= i <= count : output[i] = byte[1]
+	for i = 1, count do
+		output[i] = byte[1]
+	end
+
+	-- ∀ i | count < i <= 8 : output[i] = byte[i - count]
+	for i = count + 1, 8 do
+		output[i] = byte[i - count]
+	end
+
+	return output
+end
+
+Public.asr = Public.ArithmeticShiftRight
 
 return Public

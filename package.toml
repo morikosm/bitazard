@@ -1,0 +1,12 @@
+module = "bitazard"
+
+lua = ["5.1", "5.2", "5.3", "5.4", "jit"]
+name = "bitazard"
+version = "1.0.0"
+author = "Moriko Ninomiya (https://github.com/morikosm)"
+description = "A Pure Lua bit manipulation library."
+keywords = "bit, bitwise, manipulation, bitwise operations, bitwise manipulation"
+homepage = "https://github.com/morikosm/bitazard"
+license = "UNLICENSED"
+
+[dependencies]

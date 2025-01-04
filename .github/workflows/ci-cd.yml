@@ -1,56 +1,55 @@
 name: Test and Deploy
 
 on:
-    push:
-        branches:
-            - master
+  push:
+    branches:
+      - master
 
 jobs:
-    test:
-        runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
-        steps:
-          - name: Checkout code
-            uses: actions/checkout@v4
-          
-          - name: Set up submodules
-            run: git submodule update --init --recursive
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-          - name: Set up LuaJIT
-            run: |
-              git clone https://luajit.org/git/luajit.git
-              cd luajit
-              make
-              sudo make install
+      - name: Set up submodules
+        run: git submodule update --init --recursive
 
+      - name: Set up LuaJIT
+        run: |
+          git clone https://luajit.org/git/luajit.git
+          cd luajit
+          make
+          sudo make install
 
-          - name: Run tests
-            run: |
-                cd tests
-                luajit tests.lua -o junit -n test_results.xml
-          
-          - name: Test Summary
-            uses: test-summary/action@v2
-            with:
-                paths: |
-                    tests/test_results.xml
-                output: summary.md
-            if: always()
+      - name: Run tests
+        run: |
+          cd tests
+          luajit tests.lua -o junit -n test_results.xml
 
-          - name: Pre-pend readme with test summary
-            run: |
-                cp readme.md readme.md.tmp
-                cat summary.md > readme.md
-                printf "\n" >> readme.md
-                cat readme.md.tmp >> readme.md
-            if: always()
+      - name: Test Summary
+        uses: test-summary/action@v2
+        with:
+          paths: |
+            tests/test_results.xml
+          output: summary.md
+        if: always()
 
-          - name: Commit changes
-            run: |
-                git config --global user.name 'github-actions[bot]'
-                git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-                git add readme.md
-                git commit --amend --no-edit
-                git push --force
-            env:
-                GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Pre-pend readme with test summary
+        run: |
+          cp readme.md readme.md.tmp
+          cat summary.md > readme.md
+          printf "\n\n" >> readme.md
+          cat readme.md.tmp >> readme.md
+        if: always()
+
+      - name: Commit changes
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add readme.md
+          git commit --amend --no-edit
+          git push --force
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -273,6 +273,91 @@ TestBor = {
 	end
 }
 
+TestBxor = {
+	test_all = function(self)
+		lu.assertEquals(bitz.bxor(
+				{
+					1, 1, 1, 1,
+					1, 1, 1, 1
+				},
+				{
+					1, 1, 1, 1,
+					1, 1, 1, 1
+				}
+			),
+			{
+				0, 0, 0, 0,
+				0, 0, 0, 0
+			})
+	end,
+	test_none = function(self)
+		lu.assertEquals(bitz.bxor(
+				{
+					0, 0, 0, 0,
+					0, 0, 0, 0
+				},
+				{
+					0, 0, 0, 0,
+					0, 0, 0, 0
+				}
+			),
+			{
+				0, 0, 0, 0,
+				0, 0, 0, 0
+			})
+	end,
+	test_partial = function(self)
+		lu.assertEquals(bitz.bxor(
+				{
+					1, 1, 0, 0,
+					1, 1, 1, 1
+				},
+				{
+					0, 0, 1, 1,
+					1, 1, 1, 1
+				}
+			),
+			{
+				1, 1, 1, 1,
+				0, 0, 0, 0
+			})
+	end
+}
+
+TestMostSignificantBits = {
+	test_1_through_8 = function(self)
+		for i = 1, 8 do
+			local testByte = { 1, 1, 1, 1, 1, 1, 1, 1 }
+			local mostSignificantBits = bitz.MostSignificantBits(testByte, i)
+			local testAgainst = 0; for j = 1, i do
+				testAgainst = testAgainst + 2 ^ (8 - j)
+			end
+			lu.assertEquals(
+				mostSignificantBits,
+				bitz.PositiveIntegerToBytes(testAgainst)[1],
+				"Iteration: " .. i
+			)
+		end
+	end
+}
+
+TestLeastSignificantBits = {
+	test_1_through_8 = function(self)
+		for i = 1, 8 do
+			local testByte = { 1, 1, 1, 1, 1, 1, 1, 1 }
+			local leastSignificantBits = bitz.LeastSignificantBits(testByte, i)
+			local testAgainst = 0; for j = 1, i do
+				testAgainst = testAgainst + 2 ^ (j - 1)
+			end
+			lu.assertEquals(
+				leastSignificantBits,
+				bitz.PositiveIntegerToBytes(testAgainst)[1],
+				"Iteration: " .. i
+			)
+		end
+	end
+}
+
 TestBsr = {
 	test_shift_1_through_7 = function(self)
 		for i = 1, 7 do
@@ -319,38 +404,64 @@ TestBsl = {
 	end,
 }
 
-TestMostSignificantBits = {
-	test_1_through_8 = function(self)
-		for i = 1, 8 do
-			local testByte = { 1, 1, 1, 1, 1, 1, 1, 1 }
-			local mostSignificantBits = bitz.MostSignificantBits(testByte, i)
-			local testAgainst = 0; for j = 1, i do
-				testAgainst = testAgainst + 2 ^ (8 - j)
-			end
-			lu.assertEquals(
-				mostSignificantBits,
-				bitz.PositiveIntegerToBytes(testAgainst)[1],
-				"Iteration: " .. i
-			)
-		end
-	end
+TestBrr = {
+	test_rotate = function(self)
+		local testByte = { 1, 1, 0, 0, 0, 0, 1, 1 }
+		local rotatedByte = bitz.brr(testByte, 2)
+		lu.assertEquals(
+			rotatedByte,
+			{ 1, 1, 1, 1, 0, 0, 0, 0 }
+		)
+	end,
+
+	test_rotate_8 = function(self)
+		local testByte = { 1, 1, 0, 0, 0, 0, 1, 1 }
+		local rotatedByte = bitz.brr(testByte, 8)
+		lu.assertEquals(
+			rotatedByte,
+			{ 1, 1, 0, 0, 0, 0, 1, 1 }
+		)
+	end,
 }
 
-TestLeastSignificantBits = {
-	test_1_through_8 = function(self)
-		for i = 1, 8 do
-			local testByte = { 1, 1, 1, 1, 1, 1, 1, 1 }
-			local leastSignificantBits = bitz.LeastSignificantBits(testByte, i)
-			local testAgainst = 0; for j = 1, i do
-				testAgainst = testAgainst + 2 ^ (j - 1)
-			end
-			lu.assertEquals(
-				leastSignificantBits,
-				bitz.PositiveIntegerToBytes(testAgainst)[1],
-				"Iteration: " .. i
-			)
-		end
-	end
+TestBrl = {
+	test_rotate = function(self)
+		local testByte = { 1, 1, 0, 0, 0, 0, 1, 1 }
+		local rotatedByte = bitz.brl(testByte, 2)
+		lu.assertEquals(
+			rotatedByte,
+			{ 0, 0, 0, 0, 1, 1, 1, 1 }
+		)
+	end,
+
+	test_rotate_8 = function(self)
+		local testByte = { 1, 1, 0, 0, 0, 0, 1, 1 }
+		local rotatedByte = bitz.brl(testByte, 8)
+		lu.assertEquals(
+			rotatedByte,
+			{ 1, 1, 0, 0, 0, 0, 1, 1 }
+		)
+	end,
+}
+
+TestAsr = {
+	test_shift_high = function(self)
+		local testByte = { 1, 1, 0, 0, 0, 0, 1, 1 }
+		local shiftedByte = bitz.asr(testByte, 2)
+		lu.assertEquals(
+			shiftedByte,
+			{ 1, 1, 1, 1, 0, 0, 0, 0 }
+		)
+	end,
+
+	test_shift_low = function(self)
+		local testByte = { 0, 0, 1, 1, 0, 0, 1, 1 }
+		local shiftedByte = bitz.asr(testByte, 2)
+		lu.assertEquals(
+			shiftedByte,
+			{ 0, 0, 0, 0, 1, 1, 0, 0 }
+		)
+	end,
 }
 
 os.exit(lu.LuaUnit.run())
