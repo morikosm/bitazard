@@ -1,5 +1,5 @@
 package = "bitazard"
-version = "1.0.0-1"
+version = "1.0.0-3"
 source = {
 	url = "git://github.com/morikosm/bitazard",
 }
@@ -12,6 +12,7 @@ dependencies = {
 	"lua >= 5.1, <=5.4",
 }
 build = {
+	type = "builtin",
 	modules = {
 		bitazard = "init.lua",
 	}

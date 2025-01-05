@@ -1,3 +1,5 @@
+<img src="https://svg.test-summary.com/dashboard.svg?p=35&f=0&s=0" alt="35 passed">
+
 # Bitazard
 
 Bitazard is a pure Lua bit manipulation library. It is fully documented with LuaCATS annotations, compatible with [LuaLS](https://luals.github.io/). Written in an procedural/imperative style, and heavily annotated, Bitazard is easy to use, read, and extend. Bitazard is licensed under the zlib license. (see [LICENSE](LICENSE)). If used in a product for commercial purpose, acknowledgment is appreciated, (but not required).
