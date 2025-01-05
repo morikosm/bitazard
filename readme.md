@@ -1,6 +1,6 @@
 # Bitazard
 
-Bitazard is a pure Lua bit manipulation library. It is fully documented with LuaCATS annotations, compatible with [LuaLS](https://luals.github.io/). Written in an procedural/imperative style, and heavily annotated, Bitazard is easy to use, read, and extend. Bitazard is licensed under the ZLIB license.
+Bitazard is a pure Lua bit manipulation library. It is fully documented with LuaCATS annotations, compatible with [LuaLS](https://luals.github.io/). Written in an procedural/imperative style, and heavily annotated, Bitazard is easy to use, read, and extend. Bitazard is licensed under the zlib license. (see [LICENSE](LICENSE)). If used in a product for commercial purpose, acknowledgment is appreciated, (but not required).
 
 Bitazard is up-to-date and maintained in 2025. While this software is maintained, this notice will be current with the current year.
 
@@ -23,13 +23,13 @@ end
 
 # Usage
 
-Import bitazard and assign it to a local variable.
+Import Bitazard and assign it to a local variable.
 
 ```lua
 local bitz = require("bitazard")
 ```
 
-`bitz` is the canonical name for importing and using bitazard. `bitazard` is also acceptable.
+`bitz` is the canonical name for importing and using Bitazard. `bitazard` is also acceptable.
 
 As long as the *luals* language server is running, simply type `bitz.` and your intellisense should provide to you documentation for all of the available functions. Or, you can browse through the init.lua, which has documentation and examples for every function in the API.
 
@@ -55,15 +55,18 @@ Bitazard declares the following types as LuaCATS annotations:
 - `bitazard.byte` A tuple of 8 `bitazard.bit`.
 - `bitazard.byteArray` An array of `bitazard.byte`.
 
-Please note that numeric functions involving bytes will not accept byteArrays longer than 7 bytes, as 53 bits is the maximum size of the significand in the default Lua number (IEEE 754 double). If you don't know what that means, it just means that bitazard respects the upper bounds of numbers representable with Lua. If you need a bigger number than 9,007,199,254,740,991; you should extend bitazard to work with a big number library of your choosing.
+Please note that numeric functions involving bytes will not accept byteArrays longer than 7 bytes, as 53 bits is the maximum size of the significand in the default Lua number (IEEE 754 double). If you don't know what that means, it just means that Bitazard respects the upper bounds of numbers representable with Lua. If you need a bigger number than 9,007,199,254,740,991; you should extend Bitazard to work with a big number library of your choosing.
 
 Bitazard types are pure Lua constructs with no metatables.
 
 # Testing
+Bitazard is tested with [LuaUNIT](https://github.com/bluebird75/luaunit), which is included as a submodule. Unless you need to test Bitazard, you do not need to initialize submodules in your local branch.
 
 Bitazard is tested using LuaJIT, but is written without any Lua language version specific constructs, and should pass tests and behave the same on all major Lua platforms. (5.1 through 5.4, LuaJIT).
 
 In the case you find a failing test, please reach out.
+
+To test Bitazard, set your current working directory to `bitazard/tests` and invoke `lua tests.lua`.
 
 # Future
 

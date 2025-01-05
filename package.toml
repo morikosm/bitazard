@@ -7,6 +7,6 @@ author = "Moriko Ninomiya (https://github.com/morikosm)"
 description = "A Pure Lua bit manipulation library."
 keywords = "bit, bitwise, manipulation, bitwise operations, bitwise manipulation"
 homepage = "https://github.com/morikosm/bitazard"
-license = "UNLICENSED"
+license = "zlib"
 
 [dependencies]
