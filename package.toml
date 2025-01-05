@@ -5,7 +5,7 @@ name = "bitazard"
 version = "1.0.0"
 author = "Moriko Ninomiya (https://github.com/morikosm)"
 description = "A Pure Lua bit manipulation library."
-keywords = "bit, bitwise, manipulation, bitwise operations, bitwise manipulation"
+keywords = "bit, bitwise, bitwise operations, bit manipulation"
 homepage = "https://github.com/morikosm/bitazard"
 license = "zlib"
 

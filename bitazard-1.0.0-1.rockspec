@@ -1,8 +1,7 @@
 package = "bitazard"
-version = "1.0.0"
+version = "1.0.0-1"
 source = {
 	url = "git://github.com/morikosm/bitazard",
-	tag = "v1"
 }
 description = {
 	summary = "A Pure Lua bit manipulation library.",
@@ -12,6 +11,8 @@ description = {
 dependencies = {
 	"lua >= 5.1, <=5.4",
 }
-modules = {
-	bitazard = "init.lua",
+build = {
+	modules = {
+		bitazard = "init.lua",
+	}
 }
