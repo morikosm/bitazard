@@ -72,4 +72,4 @@ I consider Bitazard to be, at this time, complete software. It should be easily 
 - Function to convert from byteArrays to signed integers. Will probably be added as needed.
 - Documentation. While Bitazard's source files are verbosely documented, not everyone may be using luals/LuaCATS, or may prefer external documentation. This will probably be added at my leisure.
 - Adding an __index metatable to bytes and byteArrays to allow for method calling and method chaining. This is of very little value to me because it is syntactic sugar and easily implementable by the end user if needed.
-- - Add testing workflows for Lua versions 5.1 through 5.4. Unlikely to be added in the near future, as LuaJIT is the primary support platform.
+- Add testing workflows for Lua versions 5.1 through 5.4. Unlikely to be added in the near future, as LuaJIT is the primary support platform.
